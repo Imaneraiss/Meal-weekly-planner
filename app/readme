@@ -1,0 +1,118 @@
+# 🍽️ MealPlanner - Fondations du Projet
+
+**Rôle** : Création de la structure de base et des fondations du projet
+
+---
+
+## 📋 Vue d'ensemble
+
+Ce dépôt contient les **fondations complètes** de l'application MealPlanner, une application Android de planification de menus hebdomadaires et de génération automatique de listes de courses.
+
+---
+
+## ✅ Travail Réalisé
+
+### 🏗️ 1. Structure du Projet
+
+Création de l'architecture complète des packages :
+```
+com.example.menuplannerapp/
+├── models/          ✅ Modèles de données (4 classes)
+├── ui/              ✅ Interface utilisateur (Activity + Fragments)
+├── database/        ✅ Package préparé pour Room (Aya)
+├── api/             ✅ Package préparé pour l'API (Rim)
+├── generators/      ✅ Package préparé pour la logique métier (Oumaima)
+└── adapters/        ✅ Package préparé pour les RecyclerView (Oumaima)
+```
+
+---
+
+### 📦 2. Modèles de Données (4 classes Java)
+
+#### 🍽️ **Recipe.java**
+Représente une recette provenant de l'API TheMealDB
+- **Attributs** : id, name, category, area, instructions, thumbnailUrl, ingredients, measures
+- **Méthodes** : Getters/Setters + méthode utilitaire `addIngredient()`
+- **Constructeurs** : Vide + avec paramètres (id, name, category, area)
+
+#### 📅 **MenuItem.java**
+Représente un repas dans le planning hebdomadaire
+- **Attributs** : id, date, mealType (breakfast/lunch/dinner), recipe
+- **Méthodes** : Getters/Setters + `getMealTypeName()` + `getDayOfWeek()`
+- **Constructeurs** : Vide + avec paramètres (date, mealType, recipe)
+
+#### 🛒 **ShoppingItem.java**
+Représente un ingrédient dans la liste de courses
+- **Attributs** : id, ingredient, totalQuantity, isPurchased
+- **Méthodes** : Getters/Setters + `togglePurchased()`
+- **Constructeurs** : Vide + avec paramètres (ingredient, totalQuantity)
+
+#### ⚙️ **UserPreferences.java**
+Stocke les préférences alimentaires de l'utilisateur
+- **Attributs** : isVegetarian, isVegan, isGlutenFree, isDairyFree, favoriteCategories
+- **Méthodes** : Getters/Setters + `addFavoriteCategory()` + `hasAnyRestriction()`
+- **Constructeur** : Vide uniquement
+
+---
+
+### 🎨 3. Layouts XML (5 fichiers)
+
+---
+### 💻 4. Code Java (4 fichiers)
+
+
+---
+
+### ⚙️ 5. Configuration
+
+#### **build.gradle (Module: app)**
+Dépendances ajoutées :
+```gradle
+// Material Design
+implementation 'com.google.android.material:material:1.11.0'
+
+// ViewPager2
+implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+// RecyclerView
+implementation 'androidx.recyclerview:recyclerview:1.3.2'
+
+// Room (pour Aya)
+implementation 'androidx.room:room-runtime:2.6.1'
+annotationProcessor 'androidx.room:room-compiler:2.6.1'
+
+// Volley (pour Rim)
+implementation 'com.android.volley:volley:1.2.1'
+```
+---
+
+## 🚀 Comment Tester
+
+### Prérequis
+- Android Studio Arctic Fox ou supérieur
+- JDK 8 ou supérieur
+- Android SDK (API 24+)
+
+### Étapes
+1. Cloner le repository
+```bash
+git clone https://github.com/Imaneraiss/Meal-weekly-planner.git
+```
+
+2. Ouvrir le projet dans Android Studio
+
+3. Sync Gradle
+```
+File → Sync Project with Gradle Files
+```
+
+4. Build le projet
+```
+Build → Clean Project
+Build → Rebuild Project
+```
+
+5. Lancer l'application
+```
+Run → Run 'app'
+```
