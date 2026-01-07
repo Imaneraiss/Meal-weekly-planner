@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Préférences Utilisateur"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <CheckBox
+        android:id="@+id/cbVegetarian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Végétarien"
+        android:buttonTint="#452A04"/>
+
+    <CheckBox
+        android:id="@+id/cbGlutenFree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sans Gluten"
+        android:buttonTint="#452A04"/>
+
+    <CheckBox
+        android:id="@+id/cbHalal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Halal"
+        android:buttonTint="#452A04"/>
+
+    <Button
+        android:id="@+id/btnSavePreferences"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enregistrer les préférences"
+        android:backgroundTint="#452A04"
+        android:layout_marginTop="30dp" />
+
+</LinearLayout>
