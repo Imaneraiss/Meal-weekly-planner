@@ -15,11 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.menuplannerapp.R;
 import com.example.menuplannerapp.data.entity.MenuEntity;
 import com.example.menuplannerapp.data.database.AppDatabase;
+import com.example.menuplannerapp.models.MenuItem;
+
+import java.util.ArrayList;
 
 public class MenuFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView tvEmpty;
+    //****
+
+    private MenuAdapter adapter;
+    //****
 
     @Nullable
     @Override
@@ -82,4 +89,19 @@ public class MenuFragment extends Fragment {
 
 
     }
+
+
+
+    public void updateMenu(ArrayList<MenuItem> menu) {
+        if (menu != null && !menu.isEmpty()) {
+            hideEmptyMessage();
+            if (adapter == null) adapter = new MenuAdapter();
+            adapter.setMenuList(menu);
+            recyclerView.setAdapter(adapter);
+        } else {
+            showEmptyMessage();
+        }
+    }
+
+
 }

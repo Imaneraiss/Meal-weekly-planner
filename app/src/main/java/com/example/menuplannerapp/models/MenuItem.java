@@ -33,6 +33,15 @@ public class MenuItem {
     public Recipe getRecipe() {
         return recipe;
     }
+    //*****
+    public String getDay() {
+        return getDayOfWeek();   // permet tvDay.setText(...)
+    }
+
+    public String getMeal() {
+        return getMealTypeName(); // permet tvMeal.setText(...)
+    }
+    //*****
 
     // Setters
     public void setId(int id) {

@@ -39,5 +39,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+    <Button
+        android:id="@+id/btnGenerate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Generate Menu and Shopping List"
+        android:backgroundTint="#452A04"
+        android:layout_margin="16dp"/>
 
 </LinearLayout>

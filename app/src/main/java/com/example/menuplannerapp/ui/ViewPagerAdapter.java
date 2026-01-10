@@ -7,26 +7,31 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-        super(fragmentActivity);
+    private final MenuFragment menuFragment = new MenuFragment();
+    private final ShoppingFragment shoppingFragment = new ShoppingFragment();
+
+    public ViewPagerAdapter(@NonNull FragmentActivity fa) {
+        super(fa);
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Retourner le fragment correspondant à la position
-        switch (position) {
-            case 0:
-                return new MenuFragment();
-            case 1:
-                return new ShoppingFragment();
-            default:
-                return new MenuFragment();
-        }
+        if (position == 0) return menuFragment;
+        else return shoppingFragment;
     }
 
     @Override
     public int getItemCount() {
-        return 2; // Nous avons 2 onglets
+        return 2;
+    }
+
+    // Ajout de getters pour accéder aux fragments
+    public MenuFragment getMenuFragment() {
+        return menuFragment;
+    }
+
+    public ShoppingFragment getShoppingFragment() {
+        return shoppingFragment;
     }
 }

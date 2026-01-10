@@ -11,11 +11,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.menuplannerapp.R;
+import com.example.menuplannerapp.models.ShoppingItem;
+
+import java.util.ArrayList;
 
 public class ShoppingFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView tvEmpty;
+
+
+
+    private ShoppingAdapter adapter;
 
     @Nullable
     @Override
@@ -50,4 +57,20 @@ public class ShoppingFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
     }
+
+
+
+
+    public void updateList(ArrayList<ShoppingItem> list) {
+        if (list != null && !list.isEmpty()) {
+            hideEmptyMessage();
+            if (adapter == null) adapter = new ShoppingAdapter();
+            adapter.setShoppingList(list);
+            recyclerView.setAdapter(adapter);
+        } else {
+            showEmptyMessage();
+        }
+    }
+
+
 }
