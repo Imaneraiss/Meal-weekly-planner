@@ -17,6 +17,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 public class RecipeAPIManager {
 
@@ -25,9 +30,37 @@ public class RecipeAPIManager {
     private static final String FILTER_BY_CATEGORY = "filter.php?c=";
     private static final String LOOKUP_BY_ID = "lookup.php?i=";
 
+    // Ingrédients contenant du gluten
+    private static final Set<String> GLUTEN_INGREDIENTS = new HashSet<>(Arrays.asList(
+            "flour", "wheat", "bread", "pasta", "noodles", "soy sauce", "beer",
+            "barley", "rye", "couscous", "batter", "breadcrumbs", "croutons",
+            "tortilla", "pita", "cereal", "crackers", "pretzel"
+    ));
+
+    // Ingrédients non halal
+    private static final Set<String> NON_HALAL_INGREDIENTS = new HashSet<>(Arrays.asList(
+            "pork", "bacon", "ham", "sausage", "pepperoni", "prosciutto",
+            "alcohol", "wine", "beer", "rum", "vodka", "whiskey", "brandy",
+            "lard", "gelatin", "pancetta"
+    ));
+
+    // Ingrédients d'origine animale (non végétariens)
+    private static final Set<String> MEAT_INGREDIENTS = new HashSet<>(Arrays.asList(
+            "beef", "pork", "chicken", "lamb", "turkey", "duck", "fish",
+            "salmon", "tuna", "shrimp", "prawn", "crab", "lobster", "meat",
+            "bacon", "ham", "sausage", "anchovy", "seafood", "veal"
+    ));
+
+    // Ingrédients contenant du lactose
+    private static final Set<String> DAIRY_INGREDIENTS = new HashSet<>(Arrays.asList(
+            "milk", "cheese", "butter", "cream", "yogurt", "yoghurt",
+            "parmesan", "mozzarella", "cheddar", "ricotta", "mascarpone",
+            "whey", "lactose", "ghee", "buttermilk", "sour cream"
+    ));
+
     // Cache simple
     private ArrayList<Recipe> cachedRecipes = null;
-    private String lastCategory = null;
+    private String lastPreferencesKey = null;
 
     private RequestQueue requestQueue;
 
@@ -36,7 +69,7 @@ public class RecipeAPIManager {
     }
 
     /**
-     * Récupère les recettes selon les préférences utilisateur
+     * Récupère les recettes selon les préférences utilisateur avec filtrage intelligent
      */
     public void fetchRecipes(Context context, RecipeCallback callback) {
         Log.d(TAG, "fetchRecipes() appelé");
@@ -47,81 +80,155 @@ public class RecipeAPIManager {
         boolean isGlutenFree = prefs.getBoolean("gluten_free", false);
         boolean isHalal = prefs.getBoolean("halal", false);
 
-        // Déterminer la catégorie
-        String category = determineCategoryFromPreferences(isVegetarian, isGlutenFree, isHalal);
-        Log.d(TAG, "Catégorie sélectionnée : " + category);
+        // Créer une clé unique pour le cache basée sur les préférences
+        String preferencesKey = isVegetarian + "_" + isGlutenFree + "_" + isHalal;
 
         // Vérifier le cache
-        if (cachedRecipes != null && category.equals(lastCategory)) {
+        if (cachedRecipes != null && preferencesKey.equals(lastPreferencesKey)) {
             Log.d(TAG, "Utilisation du cache : " + cachedRecipes.size() + " recettes");
             callback.onSuccess(cachedRecipes);
             return;
         }
 
-        // Construire l'URL
-        String url = BASE_URL + FILTER_BY_CATEGORY + category;
-        Log.d(TAG, "URL : " + url);
+        // Déterminer les catégories à récupérer
+        ArrayList<String> categories = determineCategoriesToFetch(isVegetarian, isHalal);
+        Log.d(TAG, "Catégories à récupérer : " + categories);
 
-        // Faire la requête HTTP
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Réponse reçue");
-                        parseAndFetchDetails(response, callback, category);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG, "Erreur : " + error.toString());
-                        handleError(error, callback);
-                    }
-                }
-        );
-
-        requestQueue.add(request);
+        // Récupérer les recettes de toutes les catégories
+        fetchMultipleCategories(context, categories, isVegetarian, isGlutenFree, isHalal,
+                preferencesKey, callback);
     }
 
     /**
-     * Détermine la catégorie selon les préférences
+     * Détermine les catégories à récupérer selon les préférences
      */
-    private String determineCategoryFromPreferences(boolean isVegetarian, boolean isGlutenFree, boolean isHalal) {
+    private ArrayList<String> determineCategoriesToFetch(boolean isVegetarian, boolean isHalal) {
+        ArrayList<String> categories = new ArrayList<>();
+
         if (isVegetarian) {
-            return "Vegetarian";
+            // Si végétarien : seulement Vegetarian et Dessert
+            categories.add("Vegetarian");
+            categories.add("Dessert");
+        } else if (isHalal) {
+            // Si halal : éviter Pork, inclure Chicken, Seafood, Beef
+            categories.add("Chicken");
+            categories.add("Seafood");
+            categories.add("Beef");
+            categories.add("Dessert");
+        } else {
+            // Par défaut : mélange de plusieurs catégories
+            categories.add("Chicken");
+            categories.add("Seafood");
+            categories.add("Vegetarian");
+            categories.add("Dessert");
         }
 
-        if (isGlutenFree || isHalal) {
-            return "Seafood";
-        }
-
-        return Math.random() > 0.5 ? "Chicken" : "Seafood";
+        return categories;
     }
 
     /**
-     * Parse la réponse et récupère les détails de chaque recette
+     * Récupère les recettes de plusieurs catégories
      */
-    private void parseAndFetchDetails(JSONObject response, RecipeCallback callback, String category) {
+    private void fetchMultipleCategories(Context context, ArrayList<String> categories,
+                                         boolean isVegetarian, boolean isGlutenFree,
+                                         boolean isHalal, String preferencesKey,
+                                         RecipeCallback callback) {
+
+        ArrayList<Recipe> allRecipes = new ArrayList<>();
+        final int[] categoriesFetched = {0};
+
+        for (String category : categories) {
+            String url = BASE_URL + FILTER_BY_CATEGORY + category;
+            Log.d(TAG, "Récupération catégorie : " + category);
+
+            JsonObjectRequest request = new JsonObjectRequest(
+                    Request.Method.GET,
+                    url,
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            parseAndFetchDetailsWithFilter(response, allRecipes,
+                                    isVegetarian, isGlutenFree, isHalal,
+                                    new RecipeCallback() {
+                                        @Override
+                                        public void onSuccess(ArrayList<Recipe> recipes) {
+                                            categoriesFetched[0]++;
+
+                                            // Quand toutes les catégories sont récupérées
+                                            if (categoriesFetched[0] == categories.size()) {
+                                                Log.d(TAG, "Total recettes après filtrage : " + allRecipes.size());
+
+                                                if (allRecipes.isEmpty()) {
+                                                    callback.onError("Aucune recette ne correspond à vos critères");
+                                                } else {
+                                                    // Mettre en cache
+                                                    cachedRecipes = allRecipes;
+                                                    lastPreferencesKey = preferencesKey;
+                                                    callback.onSuccess(allRecipes);
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(String errorMessage) {
+                                            categoriesFetched[0]++;
+
+                                            if (categoriesFetched[0] == categories.size()) {
+                                                if (allRecipes.isEmpty()) {
+                                                    callback.onError("Impossible de récupérer les recettes");
+                                                } else {
+                                                    cachedRecipes = allRecipes;
+                                                    lastPreferencesKey = preferencesKey;
+                                                    callback.onSuccess(allRecipes);
+                                                }
+                                            }
+                                        }
+                                    });
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e(TAG, "Erreur catégorie " + category + " : " + error.toString());
+                            categoriesFetched[0]++;
+
+                            if (categoriesFetched[0] == categories.size()) {
+                                if (allRecipes.isEmpty()) {
+                                    handleError(error, callback);
+                                } else {
+                                    callback.onSuccess(allRecipes);
+                                }
+                            }
+                        }
+                    }
+            );
+
+            requestQueue.add(request);
+        }
+    }
+
+    /**
+     * Parse la réponse et récupère les détails avec filtrage par ingrédients
+     */
+    private void parseAndFetchDetailsWithFilter(JSONObject response, ArrayList<Recipe> allRecipes,
+                                                boolean isVegetarian, boolean isGlutenFree,
+                                                boolean isHalal, RecipeCallback callback) {
         try {
             JSONArray mealsArray = response.getJSONArray("meals");
             int totalMeals = mealsArray.length();
 
-            Log.d(TAG, "Recettes trouvées : " + totalMeals);
+            Log.d(TAG, "Recettes trouvées dans cette catégorie : " + totalMeals);
 
             if (totalMeals == 0) {
-                callback.onError("Aucune recette trouvée");
+                callback.onSuccess(new ArrayList<>());
                 return;
             }
 
-            // Limiter à 30 recettes max
-            int mealsToFetch = Math.min(totalMeals, 30);
-            ArrayList<Recipe> recipes = new ArrayList<>();
+            // Limiter à 15 recettes par catégorie pour éviter trop de requêtes
+            int mealsToFetch = Math.min(totalMeals, 15);
             final int[] fetchedCount = {0};
 
-            // Récupérer les détails de chaque recette
             for (int i = 0; i < mealsToFetch; i++) {
                 JSONObject mealObject = mealsArray.getJSONObject(i);
                 String mealId = mealObject.getString("idMeal");
@@ -130,17 +237,23 @@ public class RecipeAPIManager {
                     @Override
                     public void onSuccess(ArrayList<Recipe> detailedRecipes) {
                         if (!detailedRecipes.isEmpty()) {
-                            recipes.add(detailedRecipes.get(0));
+                            Recipe recipe = detailedRecipes.get(0);
+
+                            // FILTRAGE INTELLIGENT PAR INGRÉDIENTS
+                            if (isRecipeSuitable(recipe, isVegetarian, isGlutenFree, isHalal)) {
+                                synchronized (allRecipes) {
+                                    allRecipes.add(recipe);
+                                }
+                                Log.d(TAG, "Recette acceptée : " + recipe.getName());
+                            } else {
+                                Log.d(TAG, "Recette rejetée : " + recipe.getName());
+                            }
                         }
 
                         fetchedCount[0]++;
 
-                        // Quand toutes les recettes sont récupérées
                         if (fetchedCount[0] == mealsToFetch) {
-                            Log.d(TAG, "Toutes les recettes récupérées : " + recipes.size());
-                            cachedRecipes = recipes;
-                            lastCategory = category;
-                            callback.onSuccess(recipes);
+                            callback.onSuccess(new ArrayList<>());
                         }
                     }
 
@@ -149,13 +262,7 @@ public class RecipeAPIManager {
                         fetchedCount[0]++;
 
                         if (fetchedCount[0] == mealsToFetch) {
-                            if (recipes.isEmpty()) {
-                                callback.onError("Impossible de récupérer les détails");
-                            } else {
-                                cachedRecipes = recipes;
-                                lastCategory = category;
-                                callback.onSuccess(recipes);
-                            }
+                            callback.onSuccess(new ArrayList<>());
                         }
                     }
                 });
@@ -165,6 +272,75 @@ public class RecipeAPIManager {
             Log.e(TAG, "Erreur JSON : " + e.getMessage());
             callback.onError("Erreur d'analyse des données : " + e.getMessage());
         }
+    }
+
+    /**
+     * Vérifie si une recette convient selon les préférences (filtrage par ingrédients)
+     */
+    private boolean isRecipeSuitable(Recipe recipe, boolean isVegetarian,
+                                     boolean isGlutenFree, boolean isHalal) {
+
+        List<String> ingredients = recipe.getIngredients();
+
+        for (String ingredient : ingredients) {
+            String ingredientLower = ingredient.toLowerCase().trim();
+
+            // Filtrage végétarien
+            if (isVegetarian && containsMeat(ingredientLower)) {
+                Log.d(TAG, "Rejet (végétarien) : " + ingredient + " dans " + recipe.getName());
+                return false;
+            }
+
+            // Filtrage sans gluten
+            if (isGlutenFree && containsGluten(ingredientLower)) {
+                Log.d(TAG, "Rejet (sans gluten) : " + ingredient + " dans " + recipe.getName());
+                return false;
+            }
+
+            // Filtrage halal
+            if (isHalal && isNonHalal(ingredientLower)) {
+                Log.d(TAG, "Rejet (halal) : " + ingredient + " dans " + recipe.getName());
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Vérifie si un ingrédient contient de la viande
+     */
+    private boolean containsMeat(String ingredient) {
+        for (String meat : MEAT_INGREDIENTS) {
+            if (ingredient.contains(meat)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si un ingrédient contient du gluten
+     */
+    private boolean containsGluten(String ingredient) {
+        for (String gluten : GLUTEN_INGREDIENTS) {
+            if (ingredient.contains(gluten)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Vérifie si un ingrédient est non halal
+     */
+    private boolean isNonHalal(String ingredient) {
+        for (String nonHalal : NON_HALAL_INGREDIENTS) {
+            if (ingredient.contains(nonHalal)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -268,7 +444,7 @@ public class RecipeAPIManager {
     // Méthodes utilitaires pour le cache
     public void clearCache() {
         cachedRecipes = null;
-        lastCategory = null;
+        lastPreferencesKey = null;
         Log.d(TAG, "Cache vidé");
     }
 
