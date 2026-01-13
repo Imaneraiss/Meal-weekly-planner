@@ -62,33 +62,6 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CATEGORIES.put("Autres", List.of());
     }
 
-    private static final Map<String, String> INGREDIENT_EMOJIS = new HashMap<>();
-    static {
-        INGREDIENT_EMOJIS.put("chicken", "🍗");
-        INGREDIENT_EMOJIS.put("beef", "🥩");
-        INGREDIENT_EMOJIS.put("fish", "🐟");
-        INGREDIENT_EMOJIS.put("salmon", "🐟");
-        INGREDIENT_EMOJIS.put("shrimp", "🦐");
-        INGREDIENT_EMOJIS.put("tomato", "🍅");
-        INGREDIENT_EMOJIS.put("onion", "🧅");
-        INGREDIENT_EMOJIS.put("garlic", "🧄");
-        INGREDIENT_EMOJIS.put("carrot", "🥕");
-        INGREDIENT_EMOJIS.put("potato", "🥔");
-        INGREDIENT_EMOJIS.put("pepper", "🫑");
-        INGREDIENT_EMOJIS.put("lemon", "🍋");
-        INGREDIENT_EMOJIS.put("apple", "🍎");
-        INGREDIENT_EMOJIS.put("banana", "🍌");
-        INGREDIENT_EMOJIS.put("milk", "🥛");
-        INGREDIENT_EMOJIS.put("cheese", "🧀");
-        INGREDIENT_EMOJIS.put("butter", "🧈");
-        INGREDIENT_EMOJIS.put("rice", "🍚");
-        INGREDIENT_EMOJIS.put("bread", "🍞");
-        INGREDIENT_EMOJIS.put("pasta", "🍝");
-        INGREDIENT_EMOJIS.put("egg", "🥚");
-        INGREDIENT_EMOJIS.put("oil", "🫒");
-        INGREDIENT_EMOJIS.put("salt", "🧂");
-    }
-
     public void setShoppingList(ArrayList<ShoppingItem> list) {
         shoppingList = list;
         organizeByCategory();
@@ -136,16 +109,6 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private String getIngredientEmoji(String ingredient) {
-        String lower = ingredient.toLowerCase();
-        for (Map.Entry<String, String> entry : INGREDIENT_EMOJIS.entrySet()) {
-            if (lower.contains(entry.getKey())) {
-                return entry.getValue();
-            }
-        }
-        return "🛒";
-    }
-
     @Override
     public int getItemViewType(int position) {
         return (displayList.get(position) instanceof String)
@@ -177,7 +140,6 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ShoppingItem item = (ShoppingItem) displayList.get(position);
             ItemViewHolder itemHolder = (ItemViewHolder) holder;
 
-            itemHolder.tvEmoji.setVisibility(View.GONE); // Cache complètement l'emoji
             itemHolder.checkBox.setChecked(item.isPurchased());
             itemHolder.tvIngredient.setText(item.getIngredient());
 
@@ -196,13 +158,11 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     holder.tvIngredient.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
             holder.tvIngredient.setAlpha(0.5f);
-            holder.tvEmoji.setAlpha(0.3f);
         } else {
             holder.tvIngredient.setPaintFlags(
                     holder.tvIngredient.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG
             );
             holder.tvIngredient.setAlpha(1.0f);
-            holder.tvEmoji.setAlpha(1.0f);
         }
     }
 
@@ -222,12 +182,11 @@ public class ShoppingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         CheckBox checkBox;
-        TextView tvEmoji, tvIngredient;
+        TextView tvIngredient;
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.cbPurchased);
-            tvEmoji = itemView.findViewById(R.id.tvIngredientEmoji);
             tvIngredient = itemView.findViewById(R.id.tvIngredientName);
         }
     }

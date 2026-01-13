@@ -1,29 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="#FAFAFA">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <!-- Image de la recette en grand -->
-        <ImageView
-            android:id="@+id/ivRecipeDetailImage"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="Image de la recette" />
+            android:layout_height="300dp"
+            app:contentScrim="#6D4C41"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-        <!-- Informations principales -->
+            <!-- Image de la recette en grand avec overlay gradient -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax">
+
+                <ImageView
+                    android:id="@+id/ivRecipeDetailImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Image de la recette" />
+
+                <!-- Gradient overlay pour rendre le texte lisible -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/gradient_overlay" />
+
+            </FrameLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <!-- Nom de la recette -->
             <TextView
@@ -31,81 +59,135 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Nom de la recette"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Catégorie et origine -->
-            <TextView
-                android:id="@+id/tvRecipeDetailCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Catégorie"
-                android:textSize="14sp"
-                android:textColor="#452A04"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/tvRecipeDetailArea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Origine"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Section Ingrédients -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ingrédients"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#452A04"
-                android:layout_marginTop="8dp"
+                android:textColor="#212121"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Liste des ingrédients -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerIngredients"
+            <!-- Badges Catégorie et Origine -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
 
-            <!-- Section Instructions -->
-            <TextView
+                <TextView
+                    android:id="@+id/tvRecipeDetailCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chicken"
+                    android:textSize="13sp"
+                    android:textColor="#6D4C41"
+                    android:textStyle="bold"
+                    android:background="#FFE0B2"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tvRecipeDetailArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Moroccan"
+                    android:textSize="13sp"
+                    android:textColor="#1976D2"
+                    android:textStyle="bold"
+                    android:background="#E3F2FD"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+
+            </LinearLayout>
+
+            <!-- Carte Ingrédients -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Instructions"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#452A04"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp" />
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="20dp">
 
-            <!-- Instructions de préparation -->
-            <TextView
-                android:id="@+id/tvRecipeInstructions"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ingrédients"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#6D4C41"
+                        android:layout_marginBottom="12dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerIngredients"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Carte Instructions -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Instructions de préparation..."
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginBottom="16dp" />
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:layout_marginBottom="20dp">
 
-            <!-- Bouton retour -->
-            <Button
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Instructions"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#6D4C41"
+                        android:layout_marginBottom="12dp" />
+
+                    <TextView
+                        android:id="@+id/tvRecipeInstructions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Instructions de préparation..."
+                        android:textSize="15sp"
+                        android:textColor="#424242"
+                        android:lineSpacingExtra="6dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bouton retour stylisé -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBackToMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Retour au menu"
-                android:backgroundTint="#452A04"
-                android:layout_marginTop="16dp" />
+                android:text="← Retour au menu"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="#6D4C41"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                app:cornerRadius="12dp"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

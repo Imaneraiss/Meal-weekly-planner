@@ -5,19 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FAFAFA"
     tools:context=".ui.MainActivity">
 
-    <!-- Barre d'onglets en haut -->
+    <!-- Barre d'onglets stylisée -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#452A04"
+        android:background="#6D4C41"
+        android:elevation="4dp"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@android:color/white"
+        app:tabIndicatorColor="#FFB300"
+        app:tabIndicatorHeight="4dp"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@android:color/white"
-        app:tabTextColor="@android:color/white">
+        app:tabTextColor="#BCAAA4"
+        app:tabTextAppearance="@style/TabTextStyle">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tabMenu"
@@ -39,12 +43,25 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-    <Button
+
+    <!-- Bouton de génération stylisé avec ombre -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGenerate"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Generate Menu and Shopping List"
-        android:backgroundTint="#452A04"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:backgroundTint="#6D4C41"
+        android:elevation="6dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:text="Générer le Menu"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:icon="@android:drawable/ic_menu_rotate"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@android:color/white" />
 
 </LinearLayout>
