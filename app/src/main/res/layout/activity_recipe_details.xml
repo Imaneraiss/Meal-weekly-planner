@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Image de la recette en grand -->
+        <ImageView
+            android:id="@+id/ivRecipeDetailImage"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Image de la recette" />
+
+        <!-- Informations principales -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Nom de la recette -->
+            <TextView
+                android:id="@+id/tvRecipeDetailName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nom de la recette"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Catégorie et origine -->
+            <TextView
+                android:id="@+id/tvRecipeDetailCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Catégorie"
+                android:textSize="14sp"
+                android:textColor="#452A04"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvRecipeDetailArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Origine"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Section Ingrédients -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ingrédients"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#452A04"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Liste des ingrédients -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+            <!-- Section Instructions -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructions"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#452A04"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Instructions de préparation -->
+            <TextView
+                android:id="@+id/tvRecipeInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Instructions de préparation..."
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Bouton retour -->
+            <Button
+                android:id="@+id/btnBackToMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Retour au menu"
+                android:backgroundTint="#452A04"
+                android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

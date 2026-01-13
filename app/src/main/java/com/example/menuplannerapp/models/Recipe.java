@@ -1,9 +1,10 @@
 package com.example.menuplannerapp.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String id;
     private String name;
     private String category;
@@ -13,13 +14,13 @@ public class Recipe {
     private List<String> ingredients;
     private List<String> measures;
 
-    // Constructeur vide (si on connait pas tt les infos de la recette, on les ajoutes par la suite)
+    // Constructeur vide
     public Recipe() {
         this.ingredients = new ArrayList<>();
         this.measures = new ArrayList<>();
     }
 
-    // Constructeur avec paramètres (si on connait tt les infos)
+    // Constructeur avec paramètres
     public Recipe(String id, String name, String category, String area) {
         this.id = id;
         this.name = name;

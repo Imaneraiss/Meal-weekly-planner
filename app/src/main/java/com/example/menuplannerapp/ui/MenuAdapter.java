@@ -1,5 +1,7 @@
 package com.example.menuplannerapp.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,14 +34,9 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    /**
-     * ✅ NOUVELLE MÉTHODE : Organise le menu par jour
-     * Structure : [Header "Lundi", Petit-déj, Déjeuner, Dîner, Header "Mardi", ...]
-     */
     private void organizeMenuByDay() {
         displayList.clear();
 
-        // Grouper les repas par jour
         LinkedHashMap<String, List<MenuItem>> menuByDay = new LinkedHashMap<>();
 
         for (MenuItem item : menuList) {
@@ -50,10 +47,9 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             menuByDay.get(day).add(item);
         }
 
-        // Créer la liste d'affichage avec headers
         for (Map.Entry<String, List<MenuItem>> entry : menuByDay.entrySet()) {
-            displayList.add(entry.getKey()); // Header (nom du jour)
-            displayList.addAll(entry.getValue()); // Les 3 repas
+            displayList.add(entry.getKey());
+            displayList.addAll(entry.getValue());
         }
     }
 
@@ -94,6 +90,14 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Glide.with(holder.itemView.getContext())
                     .load(item.getRecipe().getThumbnailUrl())
                     .into(mealHolder.ivRecipe);
+
+            // ✅ AJOUT : Rendre la carte cliquable
+            mealHolder.itemView.setOnClickListener(v -> {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, RecipeDetailsActivity.class);
+                intent.putExtra("recipe", item.getRecipe());
+                context.startActivity(intent);
+            });
         }
     }
 
@@ -102,7 +106,6 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return displayList.size();
     }
 
-    // ✅ ViewHolder pour les headers de jour
     static class DayHeaderViewHolder extends RecyclerView.ViewHolder {
         TextView tvDay;
 
@@ -112,7 +115,6 @@ public class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    // ✅ ViewHolder pour les repas
     static class MealViewHolder extends RecyclerView.ViewHolder {
         TextView tvMealType, tvName, tvCategory;
         ImageView ivRecipe;

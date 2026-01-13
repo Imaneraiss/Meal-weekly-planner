@@ -16,43 +16,26 @@
         android:layout_marginEnd="12dp"
         android:buttonTint="#452A04" />
 
-    <!-- Emoji de l'ingrédient (au lieu d'une image) -->
+    <!-- Emoji de l'ingrédient -->
     <TextView
         android:id="@+id/tvIngredientEmoji"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:visibility="gone"
         android:text="🍗"
         android:textSize="28sp"
         android:gravity="center"
         android:layout_marginEnd="12dp" />
 
-    <!-- Informations textuelles -->
-    <LinearLayout
+    <!-- Nom de l'ingrédient uniquement -->
+    <TextView
+        android:id="@+id/tvIngredientName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical">
-
-        <!-- Nom de l'ingrédient -->
-        <TextView
-            android:id="@+id/tvIngredientName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Poulet"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <!-- Quantité -->
-        <TextView
-            android:id="@+id/tvQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.5 kg"
-            android:textSize="13sp"
-            android:textColor="@android:color/darker_gray"
-            android:paddingTop="2dp" />
-
-    </LinearLayout>
+        android:text="Poulet"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,6 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MenuPlannerApp">
+
+        <!-- Splash Screen -->
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
@@ -20,11 +24,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Activités existantes -->
         <activity android:name=".ui.PreferencesActivity" />
         <activity android:name=".ui.HistoryActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
+
+        <!-- ✅ NOUVELLE ACTIVITÉ : Détails de la recette -->
+        <activity
+            android:name=".ui.RecipeDetailsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.MainActivity" />
+
     </application>
 
 </manifest>
