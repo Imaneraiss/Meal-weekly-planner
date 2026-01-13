@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.menuplannerapp.R;
-import com.example.menuplannerapp.data.entity.MenuEntity;
-import com.example.menuplannerapp.data.database.AppDatabase;
 import com.example.menuplannerapp.models.MenuItem;
 
 import java.util.ArrayList;
@@ -23,10 +21,10 @@ public class MenuFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TextView tvEmpty;
-    //****
-
     private MenuAdapter adapter;
-    //****
+
+    // Menu sauvegardé pour quand le fragment n'est pas encore créé
+    private ArrayList<MenuItem> pendingMenu = null;
 
     @Nullable
     @Override
@@ -34,50 +32,70 @@ public class MenuFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        // Création de la vue à partir du XML
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
         // Initialiser les vues
         recyclerView = view.findViewById(R.id.recyclerViewMenu);
         tvEmpty = view.findViewById(R.id.tvEmptyMenu);
 
-        // 1. Crée un nouveau LinearLayoutManager
+        // Configurer le RecyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-
-        // 2. LinearLayoutManager configure :
-        //    - Orientation : vertical (par défaut)
-        //    - Sens de défilement : normal
-        //    - Comportement de recyclage
-
-        // 3. Applique au RecyclerView
         recyclerView.setLayoutManager(layoutManager);
-        // Résultat : RecyclerView sait COMMENT afficher les items
 
-
-        // Pour l'instant, on affiche le message "vide"
-        // A ajouter l'adapter et les données ici
-
+        // Afficher le message vide par défaut
         showEmptyMessage();
+
+        // Si des données sont en attente, les appliquer maintenant
+        if (pendingMenu != null) {
+            updateMenu(pendingMenu);
+            pendingMenu = null;
+        }
 
         return view;
     }
 
-    // Méthode pour afficher le message si la liste est vide
-    private void showEmptyMessage() {
-        recyclerView.setVisibility(View.GONE);
-        tvEmpty.setVisibility(View.VISIBLE);
+    /**
+     * Mise à jour du menu
+     * PROTECTION : Vérifie que la vue existe avant modification
+     */
+    public void updateMenu(ArrayList<MenuItem> menu) {
+        // Si la vue n'existe pas encore, sauvegarder pour plus tard
+        if (recyclerView == null || tvEmpty == null) {
+            pendingMenu = menu;
+            return;
+        }
+
+        if (menu != null && !menu.isEmpty()) {
+            hideEmptyMessage();
+            if (adapter == null) {
+                adapter = new MenuAdapter();
+            }
+            adapter.setMenuList(menu);
+            recyclerView.setAdapter(adapter);
+        } else {
+            showEmptyMessage();
+        }
     }
 
-    // !!!!! cacher le message si vous ajoutez les donnees
-    private void hideEmptyMessage() {
-        recyclerView.setVisibility(View.VISIBLE);
-        tvEmpty.setVisibility(View.GONE);
+    private void showEmptyMessage() {
+        if (recyclerView != null && tvEmpty != null) {
+            recyclerView.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+        }
     }
+
+    private void hideEmptyMessage() {
+        if (recyclerView != null && tvEmpty != null) {
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button btnPreferences = view.findViewById(R.id.btnPreferences);
 
+        Button btnPreferences = view.findViewById(R.id.btnPreferences);
         btnPreferences.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), PreferencesActivity.class));
         });
@@ -86,22 +104,5 @@ public class MenuFragment extends Fragment {
         btnHistory.setOnClickListener(v -> {
             startActivity(new Intent(requireContext(), HistoryActivity.class));
         });
-
-
     }
-
-
-
-    public void updateMenu(ArrayList<MenuItem> menu) {
-        if (menu != null && !menu.isEmpty()) {
-            hideEmptyMessage();
-            if (adapter == null) adapter = new MenuAdapter();
-            adapter.setMenuList(menu);
-            recyclerView.setAdapter(adapter);
-        } else {
-            showEmptyMessage();
-        }
-    }
-
-
 }

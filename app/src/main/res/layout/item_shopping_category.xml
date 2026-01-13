@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#F8F8F8"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:layout_marginTop="8dp">
+
+    <TextView
+        android:id="@+id/tvCategoryHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🥩 Viandes et Poissons"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#452A04" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD"
+        android:layout_marginTop="4dp" />
+
+</LinearLayout>

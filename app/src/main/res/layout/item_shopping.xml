@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
+    android:paddingStart="24dp"
     android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
@@ -12,27 +13,46 @@
         android:id="@+id/cbPurchased"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp" />
+        android:layout_marginEnd="12dp"
+        android:buttonTint="#452A04" />
 
-    <!-- Nom de l'ingrédient -->
+    <!-- Emoji de l'ingrédient (au lieu d'une image) -->
     <TextView
-        android:id="@+id/tvIngredientName"
+        android:id="@+id/tvIngredientEmoji"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="🍗"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Informations textuelles -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Poulet"
-        android:textSize="16sp"
-        android:textColor="@color/black" />
+        android:orientation="vertical">
 
-    <!-- Quantité -->
-    <TextView
-        android:id="@+id/tvQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1.5 kg"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingStart="16dp"
-        android:paddingEnd="0dp" />
+        <!-- Nom de l'ingrédient -->
+        <TextView
+            android:id="@+id/tvIngredientName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Poulet"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <!-- Quantité -->
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.5 kg"
+            android:textSize="13sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="2dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
