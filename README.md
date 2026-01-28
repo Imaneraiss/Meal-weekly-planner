@@ -23,7 +23,7 @@ Ce dépôt est organisé selon les versions de l’application :
 
 ---
 
-### 🔹 Branche `branch5` — Version finale (V3)
+### 🔹 Branche `branch5` — Version finale (V5)
 - **Dernière version de l’application**
 - Cette branche représente la **version finale du projet**
 
