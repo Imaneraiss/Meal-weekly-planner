@@ -3,7 +3,8 @@
 ## 📌 Description du projet
 **Meal Weekly Planner** est une application permettant de planifier les repas hebdomadaires de manière simple et efficace.  
 Le projet a évolué par versions successives, chacune étant représentée par une branche Git.
-**La version recommandée est disponible dans la branche branch5
+
+**La version recommandée est disponible dans la branche  branch5
 ---
 
 ## 🌿 Gestion des versions (Branches)
